@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Complete Cross-Venue Latency Arbitrage System
 This script runs the entire system end-to-end
@@ -30,22 +30,22 @@ def main():
     print("=" * 60)
     print()
     
-    # Step 1: Collect market data
+
     print("PHASE 1: Data Collection")
     success1 = run_command("python improved_collector.py", "Collecting market data for 20 stocks")
     time.sleep(2)
     
-    # Step 2: Measure latencies
+
     print("\nPHASE 2: Latency Monitoring")
     success2 = run_command("python test_latency.py", "Measuring venue latencies")
     time.sleep(1)
     
-    # Step 3: Execute profitable trades
+
     print("\nPHASE 3: Paper Trading Execution")
     success3 = run_command("python paper_trading.py", "Executing profitable arbitrage trades")
     time.sleep(1)
     
-    # Results
+
     print("\n" + "=" * 60)
     print("📊 SYSTEM STATUS SUMMARY")
     print("=" * 60)
