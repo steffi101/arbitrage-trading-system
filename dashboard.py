@@ -6,14 +6,13 @@ import uvicorn
 
 app = FastAPI(title="Cross-Venue Latency Arbitrage Dashboard")
 
-# Initialize Redis
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
 @app.get("/", response_class=HTMLResponse)
 async def dashboard():
     """Main dashboard page"""
     
-    # Get market data
+
     market_data = []
     symbols = ['AAPL', 'MSFT', 'GOOGL']
     
@@ -25,7 +24,7 @@ async def dashboard():
             quote = json.loads(quote_data)
             market_data.append(quote)
     
-    # Get latency data
+
     latency_data = []
     venues = ['NYSE', 'NASDAQ', 'BATS']
     
@@ -40,7 +39,7 @@ async def dashboard():
                 'latency': data['latency_ms']
             })
     
-    # Get arbitrage opportunities
+
     opportunities = []
     for symbol in symbols:
         opp_key = f"opportunity:{symbol}"
@@ -49,10 +48,10 @@ async def dashboard():
         if opp_data:
             opportunities.append(json.loads(opp_data))
     
-    # Sort opportunities by profit
+
     opportunities.sort(key=lambda x: x['profit_bps'], reverse=True)
     
-    # Generate HTML
+
     html = f"""
     <!DOCTYPE html>
     <html>
