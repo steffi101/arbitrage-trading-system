@@ -3,7 +3,7 @@ from config import ALPHA_VANTAGE_API_KEY
 
 def test_api():
     try:
-        # Test Alpha Vantage API
+
         url = "https://www.alphavantage.co/query"
         params = {
             'function': 'GLOBAL_QUOTE',
