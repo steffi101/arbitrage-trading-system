@@ -15,7 +15,7 @@ class SimpleArbitrageDetector:
         venue_prices = {}
         
         for venue in self.venues:
-            # Add small random variation (±0.5%)
+
             variation = random.uniform(-0.005, 0.005)
             venue_price = base_price * (1 + variation)
             venue_prices[venue] = round(venue_price, 2)
@@ -28,7 +28,7 @@ class SimpleArbitrageDetector:
         opportunities = []
         
         for symbol in self.symbols:
-            # Get base price from our market data
+
             quote_key = f"quote:{symbol}"
             quote_data = self.redis.get(quote_key)
             
@@ -36,21 +36,20 @@ class SimpleArbitrageDetector:
                 quote = json.loads(quote_data)
                 base_price = quote['price']
                 
-                # Simulate different prices across venues
+
                 venue_prices = self.simulate_venue_prices(base_price)
                 
-                # Find best buy and sell venues
-                buy_venue = min(venue_prices, key=venue_prices.get)  # Lowest price
-                sell_venue = max(venue_prices, key=venue_prices.get) # Highest price
+                buy_venue = min(venue_prices, key=venue_prices.get)  
+                sell_venue = max(venue_prices, key=venue_prices.get) 
                 
                 buy_price = venue_prices[buy_venue]
                 sell_price = venue_prices[sell_venue]
                 
-                # Calculate profit
+
                 profit_per_share = sell_price - buy_price
-                profit_bps = (profit_per_share / buy_price) * 10000  # Basis points
+                profit_bps = (profit_per_share / buy_price) * 10000  
                 
-                if profit_bps > 1:  # More than 1 basis point profit
+                if profit_bps > 1:  
                     opportunity = {
                         'symbol': symbol,
                         'buy_venue': buy_venue,
@@ -64,7 +63,7 @@ class SimpleArbitrageDetector:
                     
                     opportunities.append(opportunity)
                     
-                    # Store in Redis
+
                     opp_key = f"opportunity:{symbol}"
                     self.redis.set(opp_key, json.dumps(opportunity), ex=60)
                     
@@ -85,7 +84,7 @@ class SimpleArbitrageDetector:
             if opp_data:
                 opportunities.append(json.loads(opp_data))
         
-        # Sort by profit (highest first)
+
         opportunities.sort(key=lambda x: x['profit_bps'], reverse=True)
         
         for i, opp in enumerate(opportunities, 1):
