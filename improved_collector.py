@@ -8,7 +8,7 @@ class ImprovedMarketDataCollector:
     def __init__(self):
         self.redis = redis.Redis(host='localhost', port=6379, db=0)
         
-        # EXPANDED STOCK LIST - Top 20 most traded stocks
+  
         self.symbols = [
             'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 
             'META', 'NVDA', 'NFLX', 'AMD', 'CRM',
@@ -23,21 +23,21 @@ class ImprovedMarketDataCollector:
         """Collect market data and generate arbitrage opportunities"""
         print("🚀 Starting comprehensive data collection...")
         
-        # Collect market data for all symbols
+
         collected_count = 0
         
         for i, symbol in enumerate(self.symbols):
             try:
                 print(f"📡 Collecting {symbol} ({i+1}/{len(self.symbols)})...")
                 
-                # Get real quote
+
                 quote_data = self.get_quote(symbol)
                 
                 if quote_data:
-                    # Store market data
+
                     self.store_quote(symbol, quote_data)
                     
-                    # Generate arbitrage opportunity
+
                     opportunity = self.generate_opportunity(symbol, quote_data['price'])
                     
                     if opportunity:
@@ -46,8 +46,8 @@ class ImprovedMarketDataCollector:
                     collected_count += 1
                     print(f"✅ {symbol}: ${quote_data['price']} - Opportunity: {opportunity['profit_bps']:.1f} bps")
                 
-                # Wait between calls to respect rate limits
-                time.sleep(1.5)  # Alpha Vantage allows 5 calls per minute
+
+                time.sleep(1.5) 
                 
             except Exception as e:
                 print(f"❌ Error with {symbol}: {e}")
@@ -85,18 +85,18 @@ class ImprovedMarketDataCollector:
         """Generate arbitrage opportunity with realistic venue pricing"""
         import random
         
-        # Create more realistic venue price differences
+
         venue_multipliers = {
-            'NYSE': random.uniform(0.9985, 1.0015),    # ±0.15%
-            'NASDAQ': random.uniform(0.9990, 1.0020),  # ±0.10-0.20%
-            'BATS': random.uniform(0.9980, 1.0010)     # ±0.10-0.20%
+            'NYSE': random.uniform(0.9985, 1.0015),    
+            'NASDAQ': random.uniform(0.9990, 1.0020),  
+            'BATS': random.uniform(0.9980, 1.0010)    
         }
         
         venue_prices = {}
         for venue, multiplier in venue_multipliers.items():
             venue_prices[venue] = round(base_price * multiplier, 2)
         
-        # Find arbitrage opportunity
+
         buy_venue = min(venue_prices, key=venue_prices.get)
         sell_venue = max(venue_prices, key=venue_prices.get)
         
@@ -106,8 +106,8 @@ class ImprovedMarketDataCollector:
         profit_per_share = sell_price - buy_price
         profit_bps = (profit_per_share / buy_price) * 10000
         
-        # Only return opportunities with decent profit
-        if profit_bps > 5:  # At least 5 basis points
+
+        if profit_bps > 5: 
             return {
                 'symbol': symbol,
                 'buy_venue': buy_venue,
@@ -124,7 +124,7 @@ class ImprovedMarketDataCollector:
     def store_quote(self, symbol, quote_data):
         """Store quote with longer expiry"""
         quote_key = f"quote:{symbol}"
-        self.redis.set(quote_key, json.dumps(quote_data), ex=1800)  # 30 minute expiry
+        self.redis.set(quote_key, json.dumps(quote_data), ex=1800)  
         
         history_key = f"history:{symbol}"
         self.redis.lpush(history_key, json.dumps(quote_data))
@@ -134,7 +134,7 @@ class ImprovedMarketDataCollector:
         """Store opportunity with longer expiry"""
         if opportunity:
             opp_key = f"opportunity:{symbol}"
-            self.redis.set(opp_key, json.dumps(opportunity), ex=1800)  # 30 minute expiry
+            self.redis.set(opp_key, json.dumps(opportunity), ex=1800) 
 
 if __name__ == "__main__":
     collector = ImprovedMarketDataCollector()
