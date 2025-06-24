@@ -6,10 +6,10 @@ from config import ALPHA_VANTAGE_API_KEY
 
 class BasicMarketDataCollector:
     def __init__(self):
-        # Connect to Redis
+
         self.redis = redis.Redis(host='localhost', port=6379, db=0)
         
-        # Test symbols
+
         self.symbols = ['AAPL', 'MSFT', 'GOOGL']
         
         print("✅ Market Data Collector initialized")
@@ -20,15 +20,15 @@ class BasicMarketDataCollector:
         
         for symbol in self.symbols:
             try:
-                # Get quote from Alpha Vantage
+
                 quote_data = self.get_quote(symbol)
                 
                 if quote_data:
-                    # Store in Redis
+
                     self.store_quote(symbol, quote_data)
                     print(f"✅ {symbol}: ${quote_data['price']}")
                 
-                # Wait 1 second between calls (rate limit)
+
                 time.sleep(1)
                 
             except Exception as e:
@@ -61,14 +61,14 @@ class BasicMarketDataCollector:
     
     def store_quote(self, symbol, quote_data):
         """Store quote in Redis"""
-        # Store latest quote
+
         quote_key = f"quote:{symbol}"
-        self.redis.set(quote_key, json.dumps(quote_data), ex=300)  # 5 min expiry
+        self.redis.set(quote_key, json.dumps(quote_data), ex=300)  
         
         # Add to history list
         history_key = f"history:{symbol}"
         self.redis.lpush(history_key, json.dumps(quote_data))
-        self.redis.ltrim(history_key, 0, 99)  # Keep last 100 quotes
+        self.redis.ltrim(history_key, 0, 99)  
     
     def get_latest_quote(self, symbol):
         """Get latest quote from Redis"""
@@ -80,11 +80,11 @@ class BasicMarketDataCollector:
         return None
 
 if __name__ == "__main__":
-    # Test the collector
+
     collector = BasicMarketDataCollector()
     collector.collect_quotes()
     
-    # Show what we collected
+
     print("\n📊 Latest quotes in Redis:")
     for symbol in collector.symbols:
         quote = collector.get_latest_quote(symbol)
