@@ -9,7 +9,7 @@ redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
 @app.get("/", response_class=HTMLResponse)
 async def enhanced_dashboard():
-    # Get ALL symbols from the improved collector
+
     all_symbols = [
         'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 
         'META', 'NVDA', 'NFLX', 'AMD', 'CRM',
@@ -17,7 +17,7 @@ async def enhanced_dashboard():
         'SPY', 'QQQ', 'IWM', 'GLD', 'TLT'
     ]
     
-    # Get market data for ALL symbols
+
     market_data = []
     for symbol in all_symbols:
         quote_key = f"quote:{symbol}"
@@ -26,7 +26,7 @@ async def enhanced_dashboard():
             quote = json.loads(quote_data)
             market_data.append(quote)
     
-    # Get latency data
+
     latency_data = []
     venues = ['NYSE', 'NASDAQ', 'BATS']
     for venue in venues:
@@ -36,7 +36,7 @@ async def enhanced_dashboard():
             data = json.loads(latency_info)
             latency_data.append({'venue': venue, 'latency': data['latency_ms']})
     
-    # Get ALL arbitrage opportunities
+
     opportunities = []
     for symbol in all_symbols:
         opp_key = f"opportunity:{symbol}"
@@ -44,10 +44,10 @@ async def enhanced_dashboard():
         if opp_data:
             opportunities.append(json.loads(opp_data))
     
-    # Sort opportunities by profit (highest first)
+
     opportunities.sort(key=lambda x: x['profit_bps'], reverse=True)
     
-    # Calculate total potential profit
+
     total_profit = sum(opp['profit_per_share'] for opp in opportunities)
     
     html = f"""
