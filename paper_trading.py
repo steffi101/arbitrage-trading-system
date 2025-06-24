@@ -27,11 +27,11 @@ class PaperTradingEngine:
         try:
             trade_id = f"trade_{int(time.time() * 1000)}"
             
-            # Simulate execution success/failure
+
             success = random.random() < self.success_rate
             
             if success:
-                # Add some execution slippage (0.1-0.3 bps)
+
                 slippage = random.uniform(0.001, 0.003)
                 actual_profit = opportunity['profit_per_share'] - slippage
                 
@@ -60,7 +60,7 @@ class PaperTradingEngine:
                 )
                 print(f"❌ FAILED: {trade.symbol} | Execution failed")
             
-            # Store trade in Redis
+
             self.store_trade(trade)
             return trade
             
@@ -79,11 +79,11 @@ class PaperTradingEngine:
             'status': trade.status
         }
         
-        # Add to trades list
+
         self.redis.lpush('executed_trades', json.dumps(trade_data))
         self.redis.ltrim('executed_trades', 0, 99)  # Keep last 100 trades
         
-        # Update performance stats
+
         performance = {
             'total_pnl': self.total_pnl,
             'trades_executed': self.trades_executed,
@@ -108,8 +108,7 @@ class PaperTradingEngine:
     def auto_execute_best_opportunities(self, min_profit_bps=20):
         """Automatically execute the best opportunities"""
         print(f"🎯 Scanning for opportunities > {min_profit_bps} bps...")
-        
-        # Get all symbols
+
         symbols = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'META', 'NVDA', 'NFLX', 'AMD', 'CRM']
         
         executed_count = 0
@@ -121,13 +120,13 @@ class PaperTradingEngine:
             if opp_data:
                 opportunity = json.loads(opp_data)
                 
-                # Only execute high-profit opportunities
+
                 if opportunity['profit_bps'] > min_profit_bps:
                     trade = self.execute_opportunity(opportunity)
                     if trade and trade.status == "SUCCESS":
                         executed_count += 1
                     
-                    time.sleep(0.5)  # Small delay between trades
+                    time.sleep(0.5)  
         
         print(f"\n📊 Execution Summary:")
         print(f"✅ Trades executed: {executed_count}")
