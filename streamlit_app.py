@@ -5,14 +5,14 @@ import random
 import json
 from datetime import datetime
 
-# Page config
+
 st.set_page_config(
     page_title="Cross-Venue Arbitrage System",
     page_icon="📊",
     layout="wide"
 )
 
-# API key
+
 API_KEY = "6XN77PO5Q92XBAAV"
 
 @st.cache_data(ttl=300)
@@ -51,15 +51,15 @@ def get_real_stock_data():
     
     return stock_data
 
-# Main app
+
 st.title("🚀 Cross-Venue Arbitrage Trading System")
 st.markdown("**Complete system with real data, latency monitoring, and trading history**")
 
-# Load real data
+
 with st.spinner("Loading real market data..."):
     stock_data = get_real_stock_data()
 
-# Trading Performance
+
 st.header("💰 Trading Performance")
 col1, col2, col3, col4 = st.columns(4)
 with col1:
@@ -71,11 +71,11 @@ with col3:
 with col4:
     st.metric("Opportunities Found", "3", "+1")
 
-# Two column layout
+
 col1, col2 = st.columns([3, 2])
 
 with col1:
-    # Live Market Data
+
     st.header("📊 Live Market Data")
     if stock_data:
         price_cols = st.columns(len(stock_data))
@@ -83,7 +83,7 @@ with col1:
             with price_cols[i]:
                 st.metric(symbol, f"${data['price']:.2f}", f"{data['change']:+.2f}")
     
-    # Arbitrage Opportunities
+
     st.header("💎 Live Arbitrage Opportunities")
     opportunities = [
         {"symbol": "AAPL", "strategy": "Buy BATS → Sell NYSE", "profit": 0.67, "bps": 32.9},
@@ -104,7 +104,7 @@ with col1:
             st.divider()
 
 with col2:
-    # Venue Latency
+
     st.header("🌐 Venue Latency")
     latencies = [
         {"venue": "NYSE", "latency": 20.5, "status": "🟢"},
@@ -121,7 +121,7 @@ with col2:
     
     st.divider()
     
-    # Recent Trades
+
     st.header("📈 Recent Trades")
     trades = [
         {"symbol": "META", "strategy": "BATS → NYSE", "profit": 1.769},
@@ -139,7 +139,7 @@ with col2:
                 st.success(f"${trade['profit']:.3f}")
         st.divider()
 
-# System Status
+
 st.header("📈 System Status")
 status_cols = st.columns(4)
 with status_cols[0]:
@@ -151,7 +151,7 @@ with status_cols[2]:
 with status_cols[3]:
     st.success("🟢 Trading System: OPERATIONAL")
 
-# Sidebar
+
 st.sidebar.header("🔧 System Control")
 st.sidebar.success("🟢 All Systems Operational")
 st.sidebar.info(f"⏰ Last Update: {datetime.now().strftime('%H:%M:%S')}")
