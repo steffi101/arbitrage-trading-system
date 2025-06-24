@@ -9,7 +9,7 @@ redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
 @app.get("/", response_class=HTMLResponse)
 async def epic_dashboard():
-    # Get ALL symbols
+
     all_symbols = [
         'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 
         'META', 'NVDA', 'NFLX', 'AMD', 'CRM',
@@ -17,7 +17,7 @@ async def epic_dashboard():
         'SPY', 'QQQ', 'IWM', 'GLD', 'TLT'
     ]
     
-    # Get market data
+
     market_data = []
     for symbol in all_symbols:
         quote_key = f"quote:{symbol}"
@@ -26,7 +26,7 @@ async def epic_dashboard():
             quote = json.loads(quote_data)
             market_data.append(quote)
     
-    # Get latency data
+
     latency_data = []
     venues = ['NYSE', 'NASDAQ', 'BATS']
     for venue in venues:
@@ -36,7 +36,7 @@ async def epic_dashboard():
             data = json.loads(latency_info)
             latency_data.append({'venue': venue, 'latency': data['latency_ms']})
     
-    # Get opportunities
+
     opportunities = []
     for symbol in all_symbols:
         opp_key = f"opportunity:{symbol}"
