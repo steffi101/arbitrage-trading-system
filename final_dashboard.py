@@ -9,7 +9,7 @@ redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
 @app.get("/", response_class=HTMLResponse)
 async def final_dashboard():
-    # Get symbols
+
     all_symbols = [
         'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 
         'META', 'NVDA', 'NFLX', 'AMD', 'CRM',
@@ -17,7 +17,7 @@ async def final_dashboard():
         'SPY', 'QQQ', 'IWM', 'GLD', 'TLT'
     ]
     
-    # Get market data
+
     market_data = []
     for symbol in all_symbols:
         quote_key = f"quote:{symbol}"
@@ -26,7 +26,7 @@ async def final_dashboard():
             quote = json.loads(quote_data)
             market_data.append(quote)
     
-    # Get latency data
+
     latency_data = []
     venues = ['NYSE', 'NASDAQ', 'BATS']
     for venue in venues:
@@ -36,7 +36,7 @@ async def final_dashboard():
             data = json.loads(latency_info)
             latency_data.append({'venue': venue, 'latency': data['latency_ms']})
     
-    # Get opportunities
+
     opportunities = []
     for symbol in all_symbols:
         opp_key = f"opportunity:{symbol}"
@@ -47,7 +47,7 @@ async def final_dashboard():
     opportunities.sort(key=lambda x: x['profit_bps'], reverse=True)
     total_profit = sum(opp['profit_per_share'] for opp in opportunities)
     
-    # Get trading performance
+
     trading_perf = redis_client.hgetall('trading_performance')
     if trading_perf:
         total_pnl = float(trading_perf.get(b'total_pnl', 0))
@@ -58,7 +58,7 @@ async def final_dashboard():
         trades_executed = 0
         success_rate = 0.0
     
-    # Get recent trades
+
     recent_trades = []
     trades_data = redis_client.lrange('executed_trades', 0, 9)  # Last 10 trades
     for trade_data in trades_data:
